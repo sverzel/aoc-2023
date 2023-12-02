@@ -24,4 +24,4 @@ while (<$fh>) {
 }
 
 print "Sum (problem 1/2): ", sum(@numbers_1), "\n";
-print "Sum (problem 1/2): ", sum(@numbers_2), "\n";
+print "Sum (problem 2/2): ", sum(@numbers_2), "\n";
