@@ -10,7 +10,7 @@ open my $fh, $input or die $!;
 my $s1 = 0;
 while (<$fh>) {
     my $p = 0;
-    foreach my $t(grep /\d/, split /\s+/, join '', map($_, /\|(.*)$/)) {
+    foreach my $t(grep /\d/, split /\s+/, join '', map $_, /\|(.*)$/) {
 	$p++ if /^Card\s+\d+:\s.*\b$t\b.*\|/;
     }
 
