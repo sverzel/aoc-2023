@@ -13,7 +13,7 @@ my %cards;
 while (my $line = <$fh>) {
     my $p = sum(map $line =~ /^Card\s+\d+:\s.*\b$_\b.*\|/, grep /\d/, split /\s+/, join '', map $_, $line =~ /\|(.*)$/) || 0;
     
-    $s += ($p ? 2**($p-1) : 0);
+    $s += $p ? 2**($p-1) : 0;
     
     my ($c) = $line =~ /^Card\s+(\d+):/;
     $cards{$c}++;
