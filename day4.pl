@@ -10,19 +10,14 @@ open my $fh, $input or die $!;
 
 my $s1 = 0;
 my %cards;
-while (<$fh>) {
-    my $p = 0;
-    foreach my $t(grep /\d/, split /\s+/, join '', map $_, /\|(.*)$/) {
-	$p++ if /^Card\s+\d+:\s.*\b$t\b.*\|/;
-    }
+while (my $line = <$fh>) {
+    my $p = sum(map $line =~ /^Card\s+\d+:\s.*\b$_\b.*\|/, grep /\d/, split /\s+/, join '', map $_, $line =~ /\|(.*)$/) || 0;
     
-    $s1 += ($p > 0 ? 2**($p-1) : 0);
+    $s1 += ($p ? 2**($p-1) : 0);
     
-    my ($c) = /^Card\s+(\d+):/;
+    my ($c) = $line =~ /^Card\s+(\d+):/;
     $cards{$c}++;
-    for (my $n = 0; $n < $p; $n++) {
-	$cards{$c+$n+1} += $cards{$c};
-    }
+    $cards{$c+$_+1} += $cards{$c} for 0 .. $p-1;
 }
 
 print "Points in total: $s1\n";
