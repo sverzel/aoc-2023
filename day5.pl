@@ -30,38 +30,20 @@ my (@seeds, @tr);
     push @tr, {name => $k, values => [@t]} if $k;
 }
 
-#warn Dumper(@tr);
-#exit;
-
 my @locations;
 foreach my $s (@seeds) {
-    warn "Seed: '$s'\n";
     my $key = $s;
     foreach my $map(@tr) {
-	warn "Map: $map->{name}\n";
 	foreach my $tr( @{$map->{values}} ) {
 	    if ($key >= $tr->[1] and $key < $tr->[1] + $tr->[2]) {
 		$key = $tr->[0] + ($key - $tr->[1]);
-		warn "Key found in map '$map->{name}' for key '$key'\n";
-		
-		if ($map->{name} eq 'humidity-to-location') {
-		    warn "Pushing location '$key'\n";
-		    push @locations, $key;
-		}
-
+		push @locations, $key if $map->{name} eq 'humidity-to-location';
 		last;
 	    }
 	}
 
-	if ($map->{name} eq 'humidity-to-location') {
-	    warn "Pushing locations\n";
-	    push @locations, $key;
-	}
+	push @locations, $key if $map->{name} eq 'humidity-to-location';
     }
 }
-
-# 1259879174
-
-warn Dumper(@locations);
 
 print "Lowest location number: ", min(@locations), "\n";
