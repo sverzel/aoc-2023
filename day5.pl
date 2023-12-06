@@ -30,19 +30,36 @@ my (@seeds, @tr);
     push @tr, {name => $k, values => [@t]} if $k;
 }
 
-my @locations;
-foreach my $s (@seeds) {
-    my $key = $s;
+sub seed_to_location {
+    my $key = shift;
     foreach my $map(@tr) {
 	foreach my $tr( @{$map->{values}} ) {
 	    if ($key >= $tr->[1] and $key < $tr->[1] + $tr->[2]) {
 		$key = $tr->[0] + ($key - $tr->[1]);
-		push @locations, $key if $map->{name} eq 'humidity-to-location';
+		return $key if $map->{name} eq 'humidity-to-location';
 		last;
 	    }
 	}
+	
+	return $key if $map->{name} eq 'humidity-to-location';
+    }
+}
 
-	push @locations, $key if $map->{name} eq 'humidity-to-location';
+my @locations;
+foreach my $s (@seeds) {
+    @locations = min(@locations, seed_to_location($s));
+}
+
+print "Lowest location number: ", min(@locations), "\n";
+
+my @seed_ranges;
+push @seed_ranges, [splice @seeds, 0, 2] while @seeds;
+
+@locations = ();
+foreach my $sr (@seed_ranges) {
+    warn "Testing range $sr->[0] -> $sr->[1]\n";
+    for (my $s = $sr->[0]; $s < $sr->[0]+$sr->[1]; $s++) {
+	@locations = min(@locations, seed_to_location($s));
     }
 }
 
