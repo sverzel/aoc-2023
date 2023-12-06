@@ -2,7 +2,6 @@
 
 use strict;
 use List::Util qw(min);
-use Data::Dumper;
 
 my ($input) = $0 =~ /^([^.]+)/;
 $input .= '_input';
@@ -46,9 +45,7 @@ sub seed_to_location {
 }
 
 my @locations;
-foreach my $s (@seeds) {
-    @locations = min(@locations, seed_to_location($s));
-}
+@locations = min(@locations, seed_to_location($_)) foreach @seeds;
 
 print "Lowest location number: ", min(@locations), "\n";
 
@@ -57,7 +54,6 @@ push @seed_ranges, [splice @seeds, 0, 2] while @seeds;
 
 @locations = ();
 foreach my $sr (@seed_ranges) {
-    warn "Testing range $sr->[0] -> $sr->[1]\n";
     for (my $s = $sr->[0]; $s < $sr->[0]+$sr->[1]; $s++) {
 	@locations = min(@locations, seed_to_location($s));
     }
